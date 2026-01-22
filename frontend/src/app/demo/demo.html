@@ -1,0 +1,39 @@
+<!-- <h1>Credit Decision Demo</h1>
+
+<div *ngIf="loading">
+  Running...
+</div>
+
+<div *ngIf="!loading && result">
+  <p><b>Case ID:</b> {{ result.case_id }}</p>
+  <p><b>Decision:</b> {{ result.decision }}</p>
+  <p><b>Confidence:</b> {{ result.confidence }}</p>
+</div> -->
+
+
+<h1>Credit Decision Demo</h1>
+
+<button (click)="runEvaluate()">Evaluate</button>
+
+<div *ngIf="loading">Running...</div>
+
+<div *ngIf="result">
+
+  <div *ngIf="result.mode === 'NORMAL'">
+    <h3 style="color: green">NORMAL</h3>
+    <p>Decision: {{ result.decision }}</p>
+    <p>Confidence: {{ result.confidence }}</p>
+    <p>{{ result.explanation }}</p>
+  </div>
+
+  <div *ngIf="result.mode === 'FRAUD'">
+    <h3 style="color: red">FRAUD DETECTED</h3>
+    <p>{{ result.explanation }}</p>
+  </div>
+
+  <div *ngIf="result.mode === 'COLD_START'">
+    <h3 style="color: orange">COLD START</h3>
+    <p>{{ result.explanation }}</p>
+  </div>
+
+</div>
