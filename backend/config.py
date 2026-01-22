@@ -1,0 +1,1 @@
+# config centralisée (étape 2)
