@@ -1,0 +1,31 @@
+<div class="card shadow-sm mb-4 border-info">
+  <div class="card-header bg-info text-white">
+    <h3 class="h5 mb-0">Required Documents</h3>
+  </div>
+  <div class="card-body">
+    <div class="mb-3">
+      <label class="form-label font-weight-bold">ID Card</label>
+      <input type="file" class="form-control" (change)="onFileSelected($event, 'ID_CARD')" />
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label">Bank Statement</label>
+      <input type="file" class="form-control" (change)="onFileSelected($event, 'BANK_STATEMENT')" />
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label">CONTRACT</label>
+      <input type="file" class="form-control" (change)="onFileSelected($event, 'CONTRACT')" />
+    </div>
+
+    <div *ngIf="documents.length > 0">
+      <label class="form-label text-muted small uppercase">Uploaded Files:</label>
+      <ul class="list-group list-group-flush">
+        <li *ngFor="let doc of documents" class="list-group-item d-flex justify-content-between align-items-center">
+          {{ doc.type }}
+          <span class="badge bg-success rounded-pill">✔ Ready</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
