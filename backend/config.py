@@ -46,4 +46,4 @@ ENABLE_LATENCY_LOGGING = True
 # ===============================
 
 QDRANT_URL = "https://880b58fd-3475-43fb-b1d1-3d084b21b497.us-east4-0.gcp.cloud.qdrant.io:6333"
-QDRANT_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.LHDHXiBzEP64sRK8XDGN81SFO_3F2CePlTTemz38KVM"
+QDRANT_API_KEY = "xxxxx"
