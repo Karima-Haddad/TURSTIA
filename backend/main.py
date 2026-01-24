@@ -1,15 +1,23 @@
+import base64
+from pathlib import Path
 from fastapi import FastAPI, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.agents.document_agent import run_document_agent
-
+import pprint
+import traceback
+from agents.document_agent import run_document_agent
 
 app = FastAPI(title="Credit Decision API",debug=True)
+
+origins = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+]
 
 # Autoriser Angular 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,20 +57,30 @@ def evaluate(payload: dict):
 """
 @app.post("/api/document-agent/test")
 def test_document_agent(payload: dict = Body(...)):
-    case_id = payload.get("case_id")
-    documents = payload.get("documents", [])
-    applicant_form = payload.get("applicant_form", {})
-
     try:
+        print("\n🔥 /api/document-agent/test CALLED 🔥\n")
+        pprint.pprint(payload)
+
+        case_id = payload.get("case_id")
+        documents = payload.get("documents", [])
+        applicant_form = payload.get("applicant_form", {})
+
         result = run_document_agent(
             case_id=case_id,
             documents=documents,
             applicant_form=applicant_form
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Document agent error: {str(e)}")
 
-    return {
-        "case_id": case_id,
-        "document_analysis": result
-    }
+        return {
+            "case_id": case_id,
+            "document_analysis": result
+        }
+
+    except Exception as e:
+        print("❌ DOCUMENT AGENT ERROR")
+        traceback.print_exc()
+
+        return {
+            "error": "DOCUMENT_AGENT_FAILED",
+            "message": str(e)
+        }
