@@ -10,9 +10,11 @@
       <app-document-upload (documentsChange)="onDocumentsUpdate($event)"></app-document-upload>
 
       <div class="d-grid gap-2 mt-4">
-        <button class="btn btn-primary btn-lg" (click)="submit()">
-          Submit Application
-        </button>
+
+        <button class="btn btn-primary btn-lg" (click)="submit()">Run Document Agent</button>
+
+        <pre *ngIf="documentResult">{{ documentResult | json }}</pre>
+
       </div>
     </div>
   </div>

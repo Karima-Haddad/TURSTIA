@@ -5,17 +5,17 @@
   <div class="card-body">
     <div class="mb-3">
       <label class="form-label font-weight-bold">ID Card</label>
-      <input type="file" class="form-control" (change)="onFileSelected($event, 'ID_CARD')" />
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="form-control" (change)="onFileSelected($event, 'ID_CARD')" />
     </div>
 
     <div class="mb-4">
       <label class="form-label">Bank Statement</label>
-      <input type="file" class="form-control" (change)="onFileSelected($event, 'BANK_STATEMENT')" />
+      <input type="file" accept=".pdf" class="form-control" (change)="onFileSelected($event, 'BANK_STATEMENT')" />
     </div>
 
     <div class="mb-4">
       <label class="form-label">CONTRACT</label>
-      <input type="file" class="form-control" (change)="onFileSelected($event, 'CONTRACT')" />
+      <input type="file" accept=".pdf" class="form-control" (change)="onFileSelected($event, 'CONTRACT')" />
     </div>
 
     <div *ngIf="documents.length > 0">

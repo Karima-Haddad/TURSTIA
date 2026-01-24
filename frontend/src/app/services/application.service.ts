@@ -3,15 +3,14 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationService {
-
-  private API_URL = 'http://localhost:8000/api';
+  private api = 'http://127.0.0.1:8000/api';
 
   constructor(private http: HttpClient) {}
 
-  submitApplication(payload: any) {
+  runDocumentAgent(applicationPackage: any) {
     return this.http.post(
-      `${this.API_URL}/submit-application`,
-      payload
+      `${this.api}/document-agent/test`,
+      applicationPackage
     );
   }
 }

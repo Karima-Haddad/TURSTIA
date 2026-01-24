@@ -13,19 +13,41 @@ export class DocumentUploadComponent {
 
   documents: any[] = [];
 
-  onFileSelected(event: any, type: string) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // Simulation upload (backend viendra après)
-    const fakeUri = `uploads/${file.name}`;
-
-    this.documents.push({
-      doc_id: 'D' + (this.documents.length + 1),
-      type: type,
-      uri: fakeUri
+  toBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = error => reject(error);
     });
+  }
 
-    this.documentsChange.emit(this.documents);
+  onFileSelected(event: Event, docType: string) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64 = (reader.result as string).split(',')[1];
+
+      const document = {
+        doc_id: 'D' + (this.documents.length + 1),
+        type: docType,
+        filename: file.name,
+        content: base64
+      };
+
+      this.documents.push(document);
+      this.documentsChange.emit(this.documents);
+
+      console.log('📎 Document ajouté :', document);
+    };
+
+    reader.readAsDataURL(file);
   }
 }
