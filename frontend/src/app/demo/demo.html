@@ -12,7 +12,7 @@
 
 
 <h1>Credit Decision Demo</h1>
-
+<!-- 
 <button (click)="runEvaluate()">Evaluate</button>
 
 <div *ngIf="loading">Running...</div>
@@ -36,4 +36,10 @@
     <p>{{ result.explanation }}</p>
   </div>
 
-</div>
+</div> -->
+
+<app-similarity-radar
+*ngIf="response?.mode === 'NORMAL'"
+  [radarPoints]="response.radar_points">
+
+</app-similarity-radar>
