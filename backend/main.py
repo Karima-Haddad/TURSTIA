@@ -40,7 +40,7 @@ explanation_agent = ExplanationAgent()
 audit_agent = AuditAgent()
 
 COLLECTION_NAME = "credit_cases"
-VECTOR_SIZE = 2
+VECTOR_SIZE = 384
 
 
 @app.on_event("startup")
@@ -71,8 +71,8 @@ def health():
     return {"status": "ok"}
 
 
+
 @app.post("/api/evaluate")
-"""@app.post("/api/evaluate")
 def evaluate(payload: dict):
     case_id = payload.get("case_id", "")
     top_similarity = payload.get("top_similarity", 0.0)
@@ -103,13 +103,10 @@ def evaluate(payload: dict):
         "mode": "NORMAL",
         "decision": "CONTINUE_PIPELINE",
         "confidence": 0.8,
-        "explanation": "No fraud detected"
+        "explanation": "No fraud detected",
+
     }
-        "decision": "ACCEPT_WITH_GUARANTEE",
-        "confidence": 0.87,
-        "explanation": "Decision based on similar historical cases."
-    }
-"""
+
 @app.post("/api/document-agent/test")
 def test_document_agent(payload: dict = Body(...)):
     try:
