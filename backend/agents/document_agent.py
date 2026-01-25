@@ -25,28 +25,32 @@ def extract_financials(pages: List[Dict]):
     for page in pages:
         for line in page["text"]:
             if not income:
-                match = re.search(r"(salary|income).*?(\d+)", line.lower())
+                match = re.search(r"(salary|income|salaire|revenu)\s*[:\-]?\s*([\d\s,.]+)", line.lower())
                 if match:
-                    income = int(match.group(2))
-                    evidences.append(
-                        Evidence(
-                            doc_id="D1",
-                            page=page["page"],
-                            lines=[line]
+                    num_str = match.group(2).replace(" ", "").replace(",", "").replace(".", "")
+                    if num_str.isdigit():
+                        income = int(num_str)
+                        evidences.append(
+                            Evidence(
+                                doc_id="D1",
+                                page=page.get("page", 1),
+                                lines=[line]
+                            )
                         )
-                    )
 
             if not expenses:
-                match = re.search(r"(expense|debit).*?(\d+)", line.lower())
+                match = re.search(r"(expense|debit|dépense|depense|débit).*?([\d\s]+)", line.lower())
                 if match:
-                    expenses = int(match.group(2))
-                    evidences.append(
-                        Evidence(
-                            doc_id="D1",
-                            page=page["page"],
-                            lines=[line]
+                    num_str = match.group(2).replace(" ", "").replace(",", "").replace(".", "")
+                    if num_str.isdigit():
+                        expenses = int(num_str)
+                        evidences.append(
+                            Evidence(
+                                doc_id="D1",
+                                page=page.get("page", 1),
+                                lines=[line]
+                            )
                         )
-                    )
 
     return income, expenses, evidences
 
@@ -54,16 +58,19 @@ def extract_financials(pages: List[Dict]):
 def extract_contract_duration(pages: List[Dict], evidence_map: List[Evidence]):
     for page in pages:
         for line in page["text"]:
-            match = re.search(r"(\d+)\s+months", line.lower())
+            match = re.search(r"(\d{1,3})\s*(months|mois)", line.lower())
             if match:
-                evidence_map.append(
-                    Evidence(
-                        doc_id="D2",
-                        page=page["page"],
-                        lines=[line]
+                value = match.group(1)
+                if value is not None:
+                    duration = int(value)
+                    evidence_map.append(
+                        Evidence(
+                            doc_id="D2",
+                            page=page["page"],
+                            lines=[line]
+                        )
                     )
-                )
-                return int(match.group(1))
+                    return duration
     return None
 
 
@@ -77,14 +84,12 @@ def extract_text_from_image(image_path: str) -> list[str]:
             config="--psm 6"
         )
 
+        # on retourne une liste de lignes (comme parse_pdf)
         return [line.strip() for line in text.split("\n") if line.strip()]
 
     except Exception as e:
         print("❌ OCR ERROR:", e)
         return []
-
-    # on retourne une liste de lignes (comme parse_pdf)
-    return [line.strip() for line in text.split("\n") if line.strip()]
 
 def extract_cin_from_lines(lines: list[str]):
     for line in lines:
@@ -94,7 +99,7 @@ def extract_cin_from_lines(lines: list[str]):
     return None
 
 
-def run_document_agent(case_id, documents, applicant_form):
+def run_document_agent(case_id, documents):
     print("📄 Documents reçus par l'agent :", documents)
 
     doc_signals = {}

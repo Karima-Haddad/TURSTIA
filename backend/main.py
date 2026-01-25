@@ -67,8 +67,7 @@ def test_document_agent(payload: dict = Body(...)):
 
         result = run_document_agent(
             case_id=case_id,
-            documents=documents,
-            applicant_form=applicant_form
+            documents=documents
         )
 
         return {

@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pdfplumber
+fpdf
+python-multipart
+
+
+pip install -r requirements.txt
