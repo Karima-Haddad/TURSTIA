@@ -1,0 +1,33 @@
+<div class="card shadow-sm mb-4 border-info">
+  <div class="card-header bg-info text-white">
+    <h3 class="h5 mb-0">Loan Details</h3>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="row g-3">
+      
+      <div class="col-md-6">
+        <label class="form-label">Loan Amount</label>
+        <input type="number" class="form-control form-control-lg" formControlName="loan_amount" />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Term (months)</label>
+        <input type="number" class="form-control form-control-lg" formControlName="term_months" />
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label font-weight-bold">Loan Product</label>
+        <select class="form-select" formControlName="product">
+          <option value="Personal Loan">Personal Loan</option>
+          <option value="Business Loan">Business Loan</option>
+          <option value="Mortgage">Mortgage</option>
+        </select>
+      </div>
+      
+      <div class="col-12">
+        <label class="form-label">Purpose of Loan</label>
+        <input type="text" class="form-control" placeholder="Personal project, car, etc." formControlName="purpose" />
+      </div>
+      </form>
+  </div>
+</div>
