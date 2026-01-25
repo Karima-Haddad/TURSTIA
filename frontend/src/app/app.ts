@@ -6,8 +6,10 @@ import {CommonModule} from "@angular/common";
 import { SubmissionPage } from './features/submission/submission.page/submission.page';
 //import { Demo } from "./demo/demo";
 
+
 @Component({
   selector: 'app-root',
+  imports: [ RouterOutlet],
   imports: [SubmissionPage, ReactiveFormsModule, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -15,3 +17,4 @@ import { SubmissionPage } from './features/submission/submission.page/submission
 export class App {
   protected readonly title = signal('frontend');
 }
+
