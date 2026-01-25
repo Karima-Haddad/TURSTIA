@@ -15,7 +15,7 @@ from qdrant_client.models import VectorParams, Distance
 app = FastAPI(title="Credit Decision API")
 import pprint
 import traceback
-from agents.document_agent import run_document_agent
+from backend.agents.document_agent import run_document_agent
 
 app = FastAPI(title="Credit Decision API",debug=True)
 
