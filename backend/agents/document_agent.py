@@ -7,8 +7,8 @@ import pytesseract
 from PIL import Image
 from pathlib import Path
 from typing import List, Dict
-from services.document_parser import parse_pdf
-from schemas.document_analysis import (
+from backend.services.document_parser import parse_pdf
+from backend.schemas.document_analysis import (
     DocumentAnalysisResult, Evidence, TextChunk
 )
 
