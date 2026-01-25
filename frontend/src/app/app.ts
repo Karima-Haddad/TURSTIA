@@ -1,16 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {CommonModule} from "@angular/common";
-//import { RouterOutlet } from '@angular/router';
-
+import { RouterOutlet } from '@angular/router';
 import { SubmissionPage } from './features/submission/submission.page/submission.page';
-//import { Demo } from "./demo/demo";
+import { Demo } from "./demo/demo";
 
 
 @Component({
   selector: 'app-root',
-  imports: [ RouterOutlet],
-  imports: [SubmissionPage, ReactiveFormsModule, CommonModule],
+  imports: [ RouterOutlet, SubmissionPage, ReactiveFormsModule, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

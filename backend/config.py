@@ -18,7 +18,7 @@ NORMALIZE_L2 = True
 # Qdrant Configuration
 # ===============================
 
-QDRANT_COLLECTION = "Credit_Cases"
+QDRANT_COLLECTION = "credit_cases"
 QDRANT_DISTANCE = "Cosine"
 TOP_K_SIMILAR = 10
 
@@ -26,7 +26,7 @@ TOP_K_SIMILAR = 10
 # Similarity Thresholds
 # ===============================
 
-SIMILARITY_THRESHOLD = 0.75
+SIMILARITY_THRESHOLD = 0.5
 FRAUD_SIMILARITY_THRESHOLD = 0.80
 
 # ===============================
@@ -46,4 +46,5 @@ ENABLE_LATENCY_LOGGING = True
 # ===============================
 
 QDRANT_URL = "https://880b58fd-3475-43fb-b1d1-3d084b21b497.us-east4-0.gcp.cloud.qdrant.io:6333"
-QDRANT_API_KEY = "xxxxx"
+QDRANT_API_KEY = "xxx"
+QDRANT_COLLECTION = "credit_cases"
