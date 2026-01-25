@@ -18,7 +18,7 @@ NORMALIZE_L2 = True
 # Qdrant Configuration
 # ===============================
 
-QDRANT_COLLECTION = "Credit_Cases"
+QDRANT_COLLECTION = "credit_cases"
 QDRANT_DISTANCE = "Cosine"
 TOP_K_SIMILAR = 10
 
@@ -26,7 +26,7 @@ TOP_K_SIMILAR = 10
 # Similarity Thresholds
 # ===============================
 
-SIMILARITY_THRESHOLD = 0.75
+SIMILARITY_THRESHOLD = 0.5
 FRAUD_SIMILARITY_THRESHOLD = 0.80
 
 # ===============================
@@ -56,3 +56,5 @@ QDRANT_API_KEY = "xxxxx"
 
 CONFIDENCE_LOW = 0.6
 COLD_START_THRESHOLD = SIMILARITY_THRESHOLD
+QDRANT_API_KEY = "xxx"
+QDRANT_COLLECTION = "credit_cases"

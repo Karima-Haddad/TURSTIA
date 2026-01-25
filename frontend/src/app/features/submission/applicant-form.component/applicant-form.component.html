@@ -1,0 +1,49 @@
+<div class="card shadow-sm mb-4 border-info">
+  <div class="card-header bg-info text-white">
+    <h3 class="h5 mb-0">Applicant Information</h3>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-control" placeholder="e.g. 30" formControlName="age" />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Employment Type</label>
+        <select class="form-select" formControlName="employment_type">
+          <option value="">Choose...</option>
+          <option value="Employee">Employee</option>
+          <option value="Freelance">Freelance</option>
+          <option value="Unemployed">Unemployed</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Monthly Income</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input type="number" class="form-control" formControlName="monthly_income_declared" />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Monthly Expenses</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input type="number" class="form-control" formControlName="monthly_expenses_declared" />
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <label class="form-label">Sector</label>
+        <input type="text" class="form-control" placeholder="e.g. Technology" formControlName="sector" />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Late Payments</label>
+        <input type="number" class="form-control" formControlName="late_payments_declared" />
+      </div>
+    </form>
+  </div>
+</div>
