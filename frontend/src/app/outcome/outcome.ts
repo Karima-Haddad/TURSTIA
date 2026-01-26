@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators,ReactiveFormsModule  } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OutcomeService } from '../services/outcome';
@@ -14,9 +14,13 @@ import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-outcome',
+  standalone: true,
   imports: [
   ReactiveFormsModule,
   HttpClientModule,
@@ -27,7 +31,8 @@ import { ChangeDetectorRef } from '@angular/core';
   MatButtonModule,
   MatSnackBarModule,
   MatIconModule,
-  CommonModule
+  CommonModule,
+  RouterModule 
 ],
   animations: [
     trigger('fadeIn', [
@@ -40,10 +45,11 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './outcome.html',
   styleUrl: './outcome.css',
 })
-export class Outcome {
+export class Outcome implements OnDestroy {
   outcomeForm: FormGroup;
   loading = false;
-  successMessage: string | null = null; 
+  successMessage: string | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -74,7 +80,7 @@ export class Outcome {
 
   submit() {
     if (this.outcomeForm.invalid) {
-      this.successMessage = 'Outcome successfully updated';
+      this.successMessage = null;
       this.snackBar.open(
         'Please fill all required fields',
         'Close',
@@ -87,32 +93,40 @@ export class Outcome {
       this.loading = true;
     });
 
-    this.outcomeService.submitOutcome(this.outcomeForm.value).subscribe({
-      next: () => {
-        this.successMessage = 'Outcome successfully updated';
-        this.snackBar.open('Outcome successfully updated', 'Close', { duration: 3000 });
-        this.outcomeForm.reset({
-          case_id: '',
-          outcome: '',
-          loss_amount: 0
-        });
+    this.outcomeService.submitOutcome(this.outcomeForm.value)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Outcome successfully updated';
+          this.snackBar.open('Outcome successfully updated', 'Close', { duration: 3000 });
+          this.outcomeForm.reset({
+            case_id: '',
+            outcome: '',
+            loss_amount: 0
+          });
 
-        Object.keys(this.outcomeForm.controls).forEach(key => {
-          this.outcomeForm.get(key)?.setErrors(null);
-        });
+          Object.keys(this.outcomeForm.controls).forEach(key => {
+            this.outcomeForm.get(key)?.setErrors(null);
+          });
 
-        setTimeout(() => {
-          this.loading = false;
-        });
-      },
-      error: () => {
-        this.successMessage = null ;
-        this.snackBar.open('Error while updating outcome', 'Close', { duration: 3000 });
-        setTimeout(() => {
-          this.loading = false;
-        });
-      }
-    });
+          setTimeout(() => {
+            this.loading = false;
+          });
+        },
+        error: (err) => {
+          console.error('Error submitting outcome:', err);
+          this.successMessage = null;
+          this.snackBar.open('Error while updating outcome: ' + (err?.error?.detail || 'Unknown error'), 'Close', { duration: 5000 });
+          setTimeout(() => {
+            this.loading = false;
+          });
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   goToAudit() {

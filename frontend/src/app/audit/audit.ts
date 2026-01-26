@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,15 +8,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AuditService } from '../services/audit';
 import { ChangeDetectorRef } from '@angular/core';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-
+import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'app-audit',
+  standalone: true,
   imports: [
-  ReactiveFormsModule,
+    ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -26,9 +26,7 @@ import { ActivatedRoute } from '@angular/router';
   ],
   templateUrl: './audit.html',
   styleUrl: './audit.css',
- })
-
-
+})
 export class Audit implements OnInit {
 
   auditForm: FormGroup;
@@ -36,43 +34,58 @@ export class Audit implements OnInit {
   events: any[] = [];
   allEvents: any[] = []; 
   sortAsc = true;
-  caseId: string = ''; 
+  caseId: string = '';
 
-  constructor(private fb: FormBuilder, 
-              private auditService: AuditService,     
-              private cdr: ChangeDetectorRef,
-              private sanitizer: DomSanitizer,
-              private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder, 
+    private auditService: AuditService,     
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
+  ) {
     this.auditForm = this.fb.group({
       case_id: ['']
     });
   }
 
   ngOnInit() {
-    // Charger TOUS les audits dès l’ouverture de la page
+    // Charger TOUS les audits dès l'ouverture de la page
     this.loadAllAudits();
 
-   this.auditForm.get('case_id')?.valueChanges.pipe(debounceTime(300)).subscribe(value => {
-      console.log('valueChanges triggered with value:', value);  // Keep for debugging
+    this.auditForm.get('case_id')?.valueChanges
+      .pipe(
+        debounceTime(300),
+        
+      )
+      .subscribe(value => {
+        console.log('valueChanges triggered with value:', value);
 
-      if (!value || value.trim() === '') {
-        console.log('Loading all audits');
-        this.loadAllAudits();
-      } else {
-        console.log('Searching by case:', value);
-        this.searchByCase();
-      }
-    });
+        if (!value || value.trim() === '') {
+          console.log('Loading all audits');
+          this.loadAllAudits();
+        } else {
+          console.log('Searching by case:', value);
+          this.searchByCase();
+        }
+      });
 
     this.auditForm.get('case_id')?.setValue('', { emitEvent: false });
   }
 
+
   // Charger tous les audits
   loadAllAudits() {
-    this.auditService.getAllAudits().subscribe(data => {
-      this.allEvents = data;
-      this.events = data; 
-      this.cdr.markForCheck(); 
+    this.auditService.getAllAudits().subscribe({
+      next: (data) => {
+        this.allEvents = data;
+        this.events = data; 
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading audits:', error);
+        this.allEvents = [];
+        this.events = [];
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -106,9 +119,7 @@ export class Audit implements OnInit {
   searchByCase() {
     const caseId = (this.auditForm.get('case_id')?.value ?? '').toString();
     this.filterEvents(caseId);
-    
   }
-
 
   // Trier par date
   sortByDate() {
@@ -134,4 +145,3 @@ export class Audit implements OnInit {
     });
   }
 }
-
