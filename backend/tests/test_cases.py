@@ -1,8 +1,8 @@
 # tests/test_scenario_agent_full.py
 
-from agents.risk_agent import RiskAgent
-from agents.scenario_agent import ScenarioAgent
-from agents.decision_agent import DecisionAgent
+from backend.agents.risk_agent import RiskAgent
+from backend.agents.scenario_agent import ScenarioAgent
+from backend.agents.decision_agent import DecisionAgent
 
 risk_agent = RiskAgent()
 scenario_agent = ScenarioAgent()

@@ -1,0 +1,19 @@
+<h3>Simulation Scénarios</h3>
+<table *ngIf="table.length">
+  <tr>
+    <th>Scénario</th>
+    <th>Cas similaires</th>
+    <th>Taux défaut observé</th>
+    <th>Perte moyenne</th>
+    <th>Perte attendue</th>
+    <th>Verdict</th>
+  </tr>
+  <tr *ngFor="let row of table">
+    <td>{{ row.scenario }}</td>
+    <td>{{ row.similar_cases }}</td>
+    <td>{{ row.observed_default_rate }}</td>
+    <td>{{ row.avg_loss_if_default }}</td>
+    <td>{{ row.expected_loss }}</td>
+    <td>{{ row.verdict }}</td>
+  </tr>
+</table>
