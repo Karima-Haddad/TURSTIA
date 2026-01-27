@@ -12,14 +12,11 @@ import { Footer } from './footer/footer';
 =======
 import { SubmissionPage } from './features/submission/submission.page/submission.page';
 import { Demo } from "./demo/demo";
-import { HttpClientModule } from '@angular/common/http';
-import { EvaluateClientComponent } from './credit_decision/evaluate-client/evaluate-client';
 
 
 @Component({
   selector: 'app-root',
-  imports: [ RouterOutlet,  ReactiveFormsModule, CommonModule,HttpClientModule,EvaluateClientComponent],
->>>>>>> featnour
+  imports: [ RouterOutlet, SubmissionPage, ReactiveFormsModule, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

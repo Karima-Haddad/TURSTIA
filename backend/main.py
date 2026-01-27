@@ -1,9 +1,6 @@
-import base64
-from pathlib import Path
-from fastapi import FastAPI, Body, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# ✅ IMPORTS CORRECTS (depuis backend)
 from backend.agents.fraud_agent import FraudAgent
 from backend.agents.decision_agent_fraud_cold import DecisionAgentFraudCold
 from backend.agents.explanation_agent import ExplanationAgent
@@ -13,18 +10,10 @@ from backend.qdrant.client import get_qdrant_client
 from qdrant_client.models import VectorParams, Distance
 
 app = FastAPI(title="Credit Decision API")
-import pprint
-import traceback
-from backend.agents.document_agent import run_document_agent
 
-app = FastAPI(title="Credit Decision API",debug=True)
-
-origins = [
-    "http://localhost:4200",
-    "http://127.0.0.1:4200",
-]
-
+# =========================
 # CORS
+# =========================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,16 +22,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# =========================
 # Agents
+# =========================
 fraud_agent = FraudAgent()
 decision_agent = DecisionAgentFraudCold()
 explanation_agent = ExplanationAgent()
 audit_agent = AuditAgent()
 
 COLLECTION_NAME = "credit_cases"
-VECTOR_SIZE = 384
+VECTOR_SIZE = 2
 
-
+# =========================
+# STARTUP
+# =========================
 @app.on_event("startup")
 def startup_event():
     """
@@ -62,16 +55,19 @@ def startup_event():
         print("✅ Qdrant connecté et collection prête")
 
     except Exception as e:
-        print("⚠️ Qdrant non disponible au démarrage")
+        print("⚠️ Qdrant non disponible au démarrage (mode TEST possible)")
         print(e)
 
-
+# =========================
+# HEALTH CHECK
+# =========================
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
-
+# =========================
+# API PRINCIPALE
+# =========================
 @app.post("/api/evaluate")
 def evaluate(payload: dict):
     case_id = payload.get("case_id", "")
@@ -103,35 +99,53 @@ def evaluate(payload: dict):
         "mode": "NORMAL",
         "decision": "CONTINUE_PIPELINE",
         "confidence": 0.8,
-        "explanation": "No fraud detected",
-
+        "explanation": "No fraud detected"
     }
 
-@app.post("/api/document-agent/test")
-def test_document_agent(payload: dict = Body(...)):
-    try:
-        print("\n🔥 /api/document-agent/test CALLED 🔥\n")
-        pprint.pprint(payload)
+# ======================================================
+# ===================== TEST / MOCK ====================
+# ======================================================
 
-        case_id = payload.get("case_id")
-        documents = payload.get("documents", [])
-        applicant_form = payload.get("applicant_form", {})
+# TEST / MOCK – Endpoint état fraude (utilisé par le frontend)
+@app.get("/fraud_status/{case_id}")
+def fraud_status(case_id: str):
+    """
+    TEST / MOCK
+    Endpoint mocké pour tester la liaison front-back
+    Sans dépendance à Qdrant ou aux agents
+    """
+    return {
+        "caseId": case_id,
+        "status": "SUSPECT",
+        "score": 0.82,
+        "reason": "Transaction inhabituelle détectée",
+        "cold_start": True
+    }
 
-        result = run_document_agent(
-            case_id=case_id,
-            documents=documents
-        )
-
-        return {
-            "case_id": case_id,
-            "document_analysis": result
-        }
-
-    except Exception as e:
-        print("❌ DOCUMENT AGENT ERROR")
-        traceback.print_exc()
-
-        return {
-            "error": "DOCUMENT_AGENT_FAILED",
-            "message": str(e)
-        }
+# TEST / MOCK – Endpoint timeline d’audit
+@app.get("/audit_timeline/{case_id}")
+def audit_timeline(case_id: str):
+    """
+    TEST / MOCK
+    Timeline fictive pour affichage frontend
+    """
+    return {
+        "caseId": case_id,
+        "timeline": [
+            {
+                "step": "Soumission du dossier",
+                "date": "2026-01-20",
+                "actor": "Client"
+            },
+            {
+                "step": "Analyse automatique",
+                "date": "2026-01-21",
+                "actor": "AI Fraud Engine"
+            },
+            {
+                "step": "Alerte fraude",
+                "date": "2026-01-22",
+                "actor": "System"
+            }
+        ]
+    }
