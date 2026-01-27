@@ -9,9 +9,15 @@ from pathlib import Path
 from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi import Depends
+from backend.database.security import get_current_user
+from backend.database.auth import router as auth_router
 
 # Initialisation de l'app FastAPI
 app = FastAPI()
+
+# Inclusion des routes d'authentification
+app.include_router(auth_router, prefix="/auth")
 
 # Configuration du CORS pour autoriser les requêtes depuis le frontend Angular
 app.add_middleware(
@@ -33,7 +39,7 @@ learning_agent = LearningLoopAgent()
 
 # Endpoint pour soumettre l'oucome réel d'un dossier
 @app.post("/outcome")
-def submit_outcome(request: OutcomeRequest):
+def submit_outcome(request: OutcomeRequest, user=Depends(get_current_user)):
     """
     Endpoint appelé quand l'outcome réel du dossier est connu.
     """
@@ -50,7 +56,8 @@ def submit_outcome(request: OutcomeRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+        print(f"Error in submit_outcome: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 # Définition du fichier d’audit
@@ -58,7 +65,7 @@ AUDIT_LOG_FILE = Path("backend/logs/audit_log.jsonl")
 
 # Endpoint pour récupérer les logs d'audit
 @app.get("/audit")
-def get_audit_logs(case_id: str = Query(None)):
+def get_audit_logs(case_id: str = Query(None), user=Depends(get_current_user)):
     """
     Retourne les événements d'audit.
     Optionnellement filtrés par case_id.
