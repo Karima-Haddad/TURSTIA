@@ -1,0 +1,26 @@
+{
+  "case_id": "NEW-1107",
+
+  "applicant_form": {
+    "age": 26,
+    "employment_type": "Freelance",
+    "sector": "Digital Services",
+    "monthly_income": 900,
+    "monthly_expenses": 640
+  },
+
+  "loan_request": {
+    "amount": 5000,
+    "monthly_debt": 650,
+    "duration_months": 12
+  },
+
+  "doc_signals": {
+    "monthly_income": 920,
+    "monthly_expenses": 650,
+    "late_payments": 1,
+    "other_loans_count": 1,
+    "contract_duration_months": 6,
+    "id_match_score": 0.94
+  }
+}

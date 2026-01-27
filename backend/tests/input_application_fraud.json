@@ -1,0 +1,26 @@
+{
+  "case_id": "FRAUD-2201",
+
+  "applicant_form": {
+    "age": 32,
+    "employment_type": "Full-time",
+    "sector": "Retail",
+    "monthly_income": 2500,
+    "monthly_expenses": 1200
+  },
+
+  "loan_request": {
+    "amount": 15000,
+    "monthly_debt": 1800,
+    "duration_months": 24
+  },
+
+  "doc_signals": {
+    "monthly_income": 1200,
+    "monthly_expenses": 2000,
+    "late_payments": 4,
+    "other_loans_count": 3,
+    "contract_duration_months": 3,
+    "id_match_score": 0.65
+  }
+}
