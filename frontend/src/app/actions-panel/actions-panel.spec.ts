@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Outcome } from './outcome';
+import { ActionsPanel } from './actions-panel';
 
-describe('Outcome', () => {
-  let component: Outcome;
-  let fixture: ComponentFixture<Outcome>;
+describe('ActionsPanel', () => {
+  let component: ActionsPanel;
+  let fixture: ComponentFixture<ActionsPanel>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Outcome]
+      imports: [ActionsPanel]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Outcome);
+    fixture = TestBed.createComponent(ActionsPanel);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
