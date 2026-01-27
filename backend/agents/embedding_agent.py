@@ -1,6 +1,5 @@
 # ===============================
-# Embedding Agent (FINAL VERSION)
-# OPTION 1: Texte uniquement pour la similarité
+# Embedding Agent 
 # ===============================
 
 from sentence_transformers import SentenceTransformer

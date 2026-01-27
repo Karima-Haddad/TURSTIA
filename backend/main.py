@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi import FastAPI, Body, HTTPException
 from backend.agents.fraud_agent import FraudAgent
 from backend.agents.decision_agent_fraud_cold import DecisionAgentFraudCold
 from backend.agents.explanation_agent import ExplanationAgent
@@ -44,7 +45,7 @@ explanation_agent = ExplanationAgent()
 audit_agent = AuditAgent()
 
 COLLECTION_NAME = "credit_cases"
-VECTOR_SIZE = 2
+VECTOR_SIZE = 384
 
 # =========================
 # STARTUP
@@ -161,6 +162,19 @@ def audit_timeline(case_id: str):
                 "actor": "System"
             }
         ]
+    }
+
+
+@app.post("/api/document-agent/test")
+def test_document_agent(payload: dict = Body(...)):
+    try:
+        print("\n🔥 /api/document-agent/test CALLED 🔥\n")
+        pprint.pprint(payload)
+
+        case_id = payload.get("case_id")
+        documents = payload.get("documents", [])
+        applicant_form = payload.get("applicant_form", {})
+
         result = run_document_agent(
             case_id=case_id,
             documents=documents
