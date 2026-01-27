@@ -10,6 +10,19 @@ from backend.qdrant.client import get_qdrant_client
 from qdrant_client.models import VectorParams, Distance
 
 app = FastAPI(title="Credit Decision API")
+import pprint
+import traceback
+from backend.agents.document_agent import run_document_agent
+from backend.agents.document_agent import run_document_agent
+from backend.agents.profile_fusion_agent import build_final_profile
+
+
+app = FastAPI(title="Credit Decision API",debug=True)
+
+origins = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+]
 
 # =========================
 # CORS
@@ -148,4 +161,49 @@ def audit_timeline(case_id: str):
                 "actor": "System"
             }
         ]
+        result = run_document_agent(
+            case_id=case_id,
+            documents=documents
+        )
+
+        return {
+            "case_id": case_id,
+            "document_analysis": result
+        }
+
+    except Exception as e:
+        print("❌ DOCUMENT AGENT ERROR")
+        traceback.print_exc()
+
+        return {
+            "error": "DOCUMENT_AGENT_FAILED",
+            "message": str(e)
+        }
+
+@app.post("/api/complete-evaluation")
+def complete_evaluation(payload: dict = Body(...)):
+
+    case_id = payload.get("case_id")
+    applicant_form = payload.get("applicant_form", {})
+    loan_request = payload.get("loan_request", {})
+    documents = payload.get("documents", [])
+
+    # 🔹 AGENT 1
+    doc_analysis = run_document_agent(
+        case_id=case_id,
+        documents=documents
+    )
+
+    # 🔹 AGENT 2
+    fusion_result = build_final_profile(
+        case_id=case_id,
+        applicant_form=applicant_form,
+        loan_request=loan_request,
+        doc_signals=doc_analysis.doc_signals
+    )
+
+    return {
+        "case_id": case_id,
+        "document_analysis": doc_analysis,
+        "profile_fusion": fusion_result
     }

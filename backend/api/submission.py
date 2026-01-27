@@ -1,17 +1,20 @@
 from fastapi import APIRouter
 from schemas.application_package import ApplicationPackage
-from agents.document_agent import process_documents
+from backend.agents.document_agent import process_documents
 
 router = APIRouter()
 
 @router.post("/submit-application")
 def submit_application(payload: ApplicationPackage):
-    doc_results = process_documents(
+    result = run_full_pipeline(
         case_id=payload.case_id,
-        documents=payload.documents
+        applicant_form=payload.applicant_form.model_dump(),
+        loan_request=payload.loan_request.model_dump(),
+        documents=[doc.dict() for doc in payload.documents]
     )
 
     return {
         "case_id": payload.case_id,
-        "doc_results": doc_results
+        "document_agent": result["doc_analysis"],
+        "profile_agent": result["profile_analysis"]
     }

@@ -5,8 +5,19 @@
   <div class="card-body">
     <form [formGroup]="form" class="row g-3">
       <div class="col-md-6">
+        <label class="form-label">CIN</label>
+        <input type="number" class="form-control" placeholder="e.g. 12345678" formControlName="cin" />
+        <div *ngIf="isInvalid('cin')" class="text-danger small mt-1">
+          CIN is required and must be 8 digits.
+        </div>
+      </div>
+      
+      <div class="col-md-6">
         <label class="form-label">Age</label>
         <input type="number" class="form-control" placeholder="e.g. 30" formControlName="age" />
+        <div *ngIf="isInvalid('age')" class="text-danger small mt-1">
+          Age is required and must at least 18 years old.
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -17,6 +28,9 @@
           <option value="Freelance">Freelance</option>
           <option value="Unemployed">Unemployed</option>
         </select>
+        <div *ngIf="isInvalid('employment_type')" class="text-danger small mt-1">
+          Please select an employment type.
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -24,6 +38,9 @@
         <div class="input-group">
           <span class="input-group-text">$</span>
           <input type="number" class="form-control" formControlName="monthly_income_declared" />
+        </div>
+        <div *ngIf="isInvalid('monthly_income_declared')" class="text-danger small mt-1">
+          Monthly income is required and must be positive.
         </div>
       </div>
 
@@ -33,16 +50,25 @@
           <span class="input-group-text">$</span>
           <input type="number" class="form-control" formControlName="monthly_expenses_declared" />
         </div>
+        <div *ngIf="isInvalid('monthly_expenses_declared')" class="text-danger small mt-1">
+          Monthly expenses is required and must be positive.
+        </div>
       </div>
 
       <div class="col-md-8">
         <label class="form-label">Sector</label>
         <input type="text" class="form-control" placeholder="e.g. Technology" formControlName="sector" />
+        <div *ngIf="isInvalid('sector')" class="text-danger small mt-1">
+          Sector is required.
+        </div>
       </div>
 
       <div class="col-md-4">
         <label class="form-label">Late Payments</label>
         <input type="number" class="form-control" formControlName="late_payments_declared" />
+        <div *ngIf="isInvalid('late_payments_declared')" class="text-danger small mt-1">
+          Late payments is required and cannot be negative.
+        </div>
       </div>
     </form>
   </div>

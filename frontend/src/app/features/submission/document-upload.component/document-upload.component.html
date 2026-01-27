@@ -6,6 +6,9 @@
     <div class="mb-3">
       <label class="form-label font-weight-bold">ID Card</label>
       <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="form-control" (change)="onFileSelected($event, 'ID_CARD')" />
+      <div *ngIf="submitted && documents.length === 0" class="text-danger">
+        Please upload at least one ID document.
+      </div>
     </div>
 
     <div class="mb-4">
@@ -21,9 +24,10 @@
     <div *ngIf="documents.length > 0">
       <label class="form-label text-muted small uppercase">Uploaded Files:</label>
       <ul class="list-group list-group-flush">
-        <li *ngFor="let doc of documents" class="list-group-item d-flex justify-content-between align-items-center">
+        <li *ngFor="let doc of documents; let i = index" class="list-group-item d-flex justify-content-between align-items-center">
           {{ doc.type }}
           <span class="badge bg-success rounded-pill">✔ Ready</span>
+          <button type="button" class="btn btn-sm btn-danger" (click)="removeFile(i)">Supprimer</button>
         </li>
       </ul>
     </div>

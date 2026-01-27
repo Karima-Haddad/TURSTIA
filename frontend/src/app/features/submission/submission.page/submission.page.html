@@ -3,11 +3,11 @@
     <div class="col-md-8">
       <h2 class="mb-4 text-primary text-center">Credit Application Form</h2>
 
-      <app-applicant-form (formChange)="onApplicantFormChange($event)"></app-applicant-form>
+      <app-applicant-form [submitted]="formSubmitted" (formChange)="onApplicantFormChange($event)"></app-applicant-form>
 
-      <app-loan-form (formChange)="onLoanFormChange($event)"></app-loan-form>
+      <app-loan-form [submitted]="formSubmitted" (formChange)="onLoanFormChange($event)"></app-loan-form>
 
-      <app-document-upload (documentsChange)="onDocumentsUpdate($event)"></app-document-upload>
+      <app-document-upload [submitted]="formSubmitted" (documentsChange)="onDocumentsUpdate($event)"></app-document-upload>
 
       <div class="d-grid gap-2 mt-4">
 
