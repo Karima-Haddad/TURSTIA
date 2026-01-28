@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 32px;
+  margin-top: 30px;
   background: linear-gradient(135deg, rgba(54, 74, 121, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);

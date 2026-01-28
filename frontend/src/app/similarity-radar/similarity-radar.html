@@ -21,16 +21,27 @@
       <circle *ngFor="let p of positionedPoints"
               [attr.cx]="p.x"
               [attr.cy]="p.y"
-              r="7"
+              [attr.r]="p.type === 'CURRENT' ? 10 : 6"
               [attr.fill]="getColor(p)"
               (mouseenter)="onMouseEnter(p)"
               (mouseleave)="onMouseLeave()">
       </circle>
+      <ng-template *ngFor="let p of positionedPoints">
+      <circle 
+              *ngIf="p.type === 'CURRENT'"
+              [attr.cx]="p.x"
+              [attr.cy]="p.y"
+              r="16"
+              fill="green">
+      </circle>
+      </ng-template>
 
     </svg>
 
     <!-- Tooltip -->
-    <div *ngIf="hoveredPoint" class="tooltip">
+    <div *ngIf="hoveredPoint" class="tooltip"
+     (mouseenter)="onMouseEnter(hoveredPoint)"
+     (mouseleave)="onMouseLeave()">
       <strong>Case:</strong> {{ hoveredPoint.case_id || 'N/A' }}<br>
       <strong>Score:</strong> {{ hoveredPoint.score }}<br>
       <strong>Type:</strong> {{ hoveredPoint.type }}

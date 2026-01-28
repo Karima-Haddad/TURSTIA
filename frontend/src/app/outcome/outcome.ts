@@ -18,21 +18,22 @@ import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-outcome',
   standalone: true,
   imports: [
-  ReactiveFormsModule,
-  HttpClientModule,
-  MatCardModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatSelectModule,
-  MatButtonModule,
-  MatSnackBarModule,
-  MatIconModule,
-  CommonModule,
-  RouterModule 
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatIconModule,
+    CommonModule,
+    RouterModule
 ],
   animations: [
     trigger('fadeIn', [

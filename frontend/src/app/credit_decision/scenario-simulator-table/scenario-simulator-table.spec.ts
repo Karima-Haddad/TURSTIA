@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./scenario-simulator-table.css']
 })
 export class ScenarioSimulatorTable {
-  @Input() table: any[] = [];
+  @Input() scenarios: any[] = [];
 }

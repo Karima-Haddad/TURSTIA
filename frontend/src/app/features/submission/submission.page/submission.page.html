@@ -1,3 +1,5 @@
+
+
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
@@ -11,7 +13,7 @@
 
       <div class="d-grid gap-2 mt-4">
 
-        <button class="btn btn-primary btn-lg" (click)="submit()">Run Document Agent</button>
+        <button class="btn btn-primary btn-lg" (click)="onSubmit()">Run Document Agent</button>
 
         <pre *ngIf="documentResult">{{ documentResult | json }}</pre>
 

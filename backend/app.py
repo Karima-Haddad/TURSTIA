@@ -1,6 +1,14 @@
-# FastAPI (appel du pipeline)
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import pprint
+from fastapi import Body
+from fastapi import APIRouter
+from backend.agents.supervisor_agent import SupervisorAgent
+import traceback
+from backend.agents.document_agent import run_document_agent
+from backend.agents.document_agent import run_document_agent
+from backend.agents.profile_fusion_agent import build_final_profile
 
 from backend.agents.learning_loop_agent import LearningLoopAgent
 
@@ -87,3 +95,78 @@ def get_audit_logs(case_id: str = Query(None), user=Depends(get_current_user)):
                 events.append(event)
 
     return events
+
+
+
+
+@app.post("/api/document-agent/test")
+def test_document_agent(payload: dict = Body(...)):
+    try:
+        print("\n🔥 /api/document-agent/test CALLED 🔥\n")
+        pprint.pprint(payload)
+
+        case_id = payload.get("case_id")
+        documents = payload.get("documents", [])
+        applicant_form = payload.get("applicant_form", {})
+
+        result = run_document_agent(
+            case_id=case_id,
+            documents=documents
+        )
+
+        return {
+            "case_id": case_id,
+            "document_analysis": result
+        }
+
+    except Exception as e:
+        print("❌ DOCUMENT AGENT ERROR")
+        traceback.print_exc()
+
+        return {
+            "error": "DOCUMENT_AGENT_FAILED",
+            "message": str(e)
+        }
+
+@app.post("/api/complete-evaluation")
+def complete_evaluation(payload: dict = Body(...)):
+
+    case_id = payload.get("case_id")
+    applicant_form = payload.get("applicant_form", {})
+    loan_request = payload.get("loan_request", {})
+    documents = payload.get("documents", [])
+
+    # AGENT 1
+    doc_analysis = run_document_agent(
+        case_id=case_id,
+        documents=documents
+    )
+
+    # AGENT 2
+    fusion_result = build_final_profile(
+        case_id=case_id,
+        applicant_form=applicant_form,
+        loan_request=loan_request,
+        doc_signals=doc_analysis.doc_signals
+    )
+
+    return {
+        "case_id": case_id,
+        "document_analysis": doc_analysis,
+        "profile_fusion": fusion_result
+    }
+
+
+router = APIRouter()
+supervisoragent = SupervisorAgent()
+
+@router.post("/submit-application")
+def submit_application(payload: dict):
+    return supervisoragent.run(payload)
+
+
+
+@app.post("/api/submit-application")
+def submit_application(payload: dict):
+    supervisor = SupervisorAgent()
+    return supervisor.run(payload)

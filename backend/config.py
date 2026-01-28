@@ -4,7 +4,7 @@
 # ===============================
 
 TEXT_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-IMAGE_EMBEDDING_MODEL = "openclip-vit-b32"  # optionnel
+IMAGE_EMBEDDING_MODEL = "openclip-vit-b32"  
 
 USE_IMAGE_EMBEDDING = True   # tu peux le désactiver si besoin
 
@@ -26,7 +26,7 @@ TOP_K_SIMILAR = 10
 # Similarity Thresholds
 # ===============================
 
-SIMILARITY_THRESHOLD = 0.5
+SIMILARITY_THRESHOLD = 0.75
 FRAUD_SIMILARITY_THRESHOLD = 0.80
 COLD_START_THRESHOLD = SIMILARITY_THRESHOLD
 CONFIDENCE_LOW = 0.6
