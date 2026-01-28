@@ -3,21 +3,21 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h2 class="mb-4 text-primary text-center">Credit Application Form</h2>
+<div class="form-card">
+  <div class="form-title" style="text-align:center;">Credit Application</div>
 
-      <app-applicant-form [submitted]="formSubmitted" (formChange)="onApplicantFormChange($event)"></app-applicant-form>
+  <app-applicant-form [submitted]="formSubmitted" (formChange)="onApplicantFormChange($event)"></app-applicant-form>
 
-      <app-loan-form [submitted]="formSubmitted" (formChange)="onLoanFormChange($event)"></app-loan-form>
+  <app-loan-form [submitted]="formSubmitted" (formChange)="onLoanFormChange($event)"></app-loan-form>
 
-      <app-document-upload [submitted]="formSubmitted" (documentsChange)="onDocumentsUpdate($event)"></app-document-upload>
+  <app-document-upload [submitted]="formSubmitted" (documentsChange)="onDocumentsUpdate($event)"></app-document-upload>
 
-      <div class="d-grid gap-2 mt-4">
-
-        <button class="btn btn-primary btn-lg" (click)="onSubmit()">Run Document Agent</button>
-
-        <pre *ngIf="documentResult">{{ documentResult | json }}</pre>
-
-      </div>
-    </div>
+      
+  <div class="form-actions">
+    <button class="btn-primary run-btn" (click)="onSubmit()">
+      Run Document Agent
+    </button>
   </div>
+
+  <pre *ngIf="documentResult" style="margin-top:20px;">{{ documentResult | json }}</pre>
 </div>
