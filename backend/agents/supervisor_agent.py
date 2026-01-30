@@ -141,14 +141,6 @@ class SupervisorAgent:
             retrieval_result["similar_normal_cases"] + retrieval_result["similar_fraud_cases"]
         )
 
-        if not stats_by_decision:
-            stats_by_decision = {
-                "ACCEPT": {"n": 5, "observed_default_rate": 0.18, "avg_loss_if_default": 1500},
-                "ACCEPT_WITH_GUARANTEE": {"n": 4, "observed_default_rate": 0.05, "avg_loss_if_default": 500},
-                "REJECT": {"n": 2, "observed_default_rate": 0.6, "avg_loss_if_default": 3000}
-            }
-
-
         scenario_result = self.scenario_agent.simulate(
             stats_by_decision=stats_by_decision,
             default_probability=default_prob
