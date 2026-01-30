@@ -47,7 +47,7 @@ learning_agent = LearningLoopAgent()
 
 # Endpoint pour soumettre l'oucome réel d'un dossier
 @app.post("/outcome")
-def submit_outcome(request: OutcomeRequest, user=Depends(get_current_user)):
+def submit_outcome(request: OutcomeRequest):
     """
     Endpoint appelé quand l'outcome réel du dossier est connu.
     """
@@ -170,3 +170,5 @@ def submit_application(payload: dict):
 def submit_application(payload: dict):
     supervisor = SupervisorAgent()
     return supervisor.run(payload)
+
+
