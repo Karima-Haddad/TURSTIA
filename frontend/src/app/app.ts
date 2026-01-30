@@ -3,8 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Header } from './header/header';
 import { Footer } from './footer/footer';
-import { SubmissionPage } from './features/submission/submission.page/submission.page';
-import { Demo } from "./demo/demo";
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,5 +13,14 @@ import { Demo } from "./demo/demo";
 })
 export class App {
   protected readonly title = signal('frontend');
+  isLoginPage = false;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isLoginPage = event.urlAfterRedirects.includes('login');
+      }
+    });
+  }
 }
 

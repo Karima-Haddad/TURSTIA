@@ -1,3 +1,6 @@
+header{
+  margin-bottom: 20px;
+}
 .navbar {
   height: 64px;
   display: flex;
@@ -29,6 +32,12 @@
   transition: transform 0.3s ease;
 }
 
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
 
 .nav-left .logo:hover {

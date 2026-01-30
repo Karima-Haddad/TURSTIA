@@ -1,26 +1,11 @@
-<app-header></app-header>
+<div class="page-container">
 
-<main class="content">
-  <router-outlet></router-outlet>
-</main>
+  <app-header *ngIf="!isLoginPage"></app-header>
 
-<app-footer></app-footer>
-<!-- <app-demo></app-demo> -->
- <!-- <app-outcome></app-outcome>
-  <router-outlet></router-outlet> -->
-<!-- <app-audit></app-audit> -->
-<!-- <app-submission></app-submission>-->
- <!-- <app-evaluate-client></app-evaluate-client>
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
 
+  <app-footer></app-footer>
 
-
-
-
-
-<app-fraud-banner [caseId]="'123'"></app-fraud-banner>
-<app-coldstart-warning [caseId]="'123'"></app-coldstart-warning>
-<app-audit-timeline [caseId]="'123'"></app-audit-timeline>
-
-
-<h1>Test Front ↔ Back</h1>
-<app-fraud-test></app-fraud-test> -->
+</div>

@@ -10,7 +10,7 @@ import { AuditService } from '../services/audit';
 import { ChangeDetectorRef } from '@angular/core';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Subject } from 'rxjs/internal/Subject';
+
 
 @Component({
   selector: 'app-audit',
@@ -23,7 +23,7 @@ import { Subject } from 'rxjs/internal/Subject';
     MatButtonModule,
     MatCardModule,
     MatIconModule
-  ],
+],
   templateUrl: './audit.html',
   styleUrl: './audit.css',
 })

@@ -3,7 +3,13 @@ html, body {
   margin: 0;
 }
 
-.content {
-  min-height: calc(100vh - 100px);
-  background: #f7f9fc;
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding: 24px;
 }

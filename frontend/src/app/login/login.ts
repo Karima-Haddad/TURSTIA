@@ -39,7 +39,7 @@ export class Login {
     this.auth.login(this.loginForm.value).subscribe({
       next: (res: any) => {
         this.auth.saveToken(res.access_token);
-        this.router.navigate(['/outcome']); 
+        this.router.navigate(['/submission']); 
       },
       error: (err) => {
         this.errorMsg = 'Email ou mot de passe incorrect';
