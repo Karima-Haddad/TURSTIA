@@ -1,26 +1,16 @@
 {
-  "case_id": "FRAUD-2201",
-
-  "applicant_form": {
-    "age": 32,
-    "employment_type": "Full-time",
-    "sector": "Retail",
-    "monthly_income": 2500,
-    "monthly_expenses": 1200
-  },
-
-  "loan_request": {
-    "amount": 15000,
-    "monthly_debt": 1800,
-    "duration_months": 24
-  },
-
-  "doc_signals": {
-    "monthly_income": 1200,
-    "monthly_expenses": 2000,
-    "late_payments": 4,
-    "other_loans_count": 3,
-    "contract_duration_months": 3,
-    "id_match_score": 0.65
-  }
+  "applicant_id": "FRAUD001",
+  "name": "Bob Martin",
+  "employment_type": "Freelance",
+  "sector": "Construction",
+  "monthly_income": 2000,
+  "monthly_expenses": 1800,
+  "debt_ratio": 0.90,
+  "late_payments": 5,
+  "other_loans_count": 3,
+  "loan_amount": 15000,
+  "term_months": 36,
+  "product": "Business Loan",
+  "suspicious_documents": true,
+  "previous_fraud_alerts": 1
 }

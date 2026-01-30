@@ -1,8 +1,8 @@
 # backend/tests/test_pipeline.py
 
-from agents.risk_agent import RiskAgent
-from agents.scenario_agent import ScenarioAgent
-from agents.decision_agent import DecisionAgent
+from backend.agents.risk_agent import RiskAgent
+from backend.agents.scenario_agent import ScenarioAgent
+from backend.agents.decision_agent import DecisionAgent
 
 # ------------------------------
 # 1️⃣ Inputs simulés (extrait d'un dossier complet)
@@ -66,12 +66,32 @@ print("→ ScenarioAgent :", scenario_result)
 # 4️⃣ DecisionAgent
 # ------------------------------
 decision_agent = DecisionAgent()
-decision_result = decision_agent.decide(
-    top_similarity=llm_summary["top_similarity"],
-    fraud_risk_level=fraud_risk_level,
-    best_scenario=scenario_result["best_scenario"],
+# Simuler les résultats pour le test
+fraud_result = {
+    "fraud_risk_level": "LOW",        # HIGH / MEDIUM / LOW
+    "fraud_similarity": 0.0,          # float entre 0 et 1
+    "anomaly_score": 0.0              # float entre 0 et 1
+}
+
+scenario_result = {
+    "best_scenario": "ACCEPT"         # ACCEPT / ACCEPT_WITH_GUARANTEE / REJECT
+}
+
+risk_result = {
+    "risk_level": "LOW",              # LOW / MEDIUM / HIGH
+    "default_probability": 0.05       # float
+}
+
+top_similarity = llm_summary.get("top_similarity", 0.8)  # ou une valeur factice
+
+# Appel correct de run()
+decision_result = decision_agent.run(
+    top_similarity=top_similarity,
+    fraud_result=fraud_result,
+    scenario_result=scenario_result,
     risk_result=risk_result
 )
+
 
 print("→ DecisionAgent :", decision_result)
 
