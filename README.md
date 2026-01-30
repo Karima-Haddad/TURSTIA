@@ -204,13 +204,24 @@ pytest backend\tests\test_retrieval.py -v
 ```
 
 ### Tests disponibles (extraits)
-Tests disponibles
-Fichier	Objectif
-test_retrieval.py			---> Recherche vectorielle Qdrant
-test_embedding.py			---> Génération embeddings
-test_pipeline.py			---> End-to-end pipeline
-test_decision_agent.py		---> Logique décision
-test_risk_agent.py			---> Scoring risque
+Tests disponibles			---> Fichier Objectif
+test_retrieval.py			---> Recherche vectorielle Qdrant (retrieval & radar)
+test_embedding.py			---> Génération embeddings (EmbeddingAgent)
+test_pipeline.py			---> End-to-end pipeline (risk → scenario → decision)
+test_decision_agent.py		---> Logique décision (normal / cold / fraud cases)
+test_risk_agent.py			---> Scoring risque (RiskAgent)
+test_qdrant_client.py		---> Vérifie client Qdrant & config collection (dim=384)
+test_profile_fusion.py		---> Fusion de profil (build_final_profile)
+test_ocr.py				---> OCR (pytesseract extraction)
+test_learning_loop_agent.py	---> Learning loop (mise à jour d'outcomes dans Qdrant)
+test_supervisor.py		---> Supervisor scenarios (cold / fraud / normal)
+test_scenario_agent.py		---> Simulation de scénarios décisionnels
+test_persona4_agents.py		---> Tests intégrés : fraude, décision, explication, audit
+test_per3.py			---> Exemple pipeline (risk → scenario → decision)
+test_cases.py			---> Scénarios multiples pour tests décisionnels
+run_test_cases.py		---> Script d'exécution pour JSON d'exemple (end-to-end)
+testdecisonAgent.py		---> (placeholder / fichier vide)
+FindPoint.py			---> Utilitaire : rechercher un point par case_id dans Qdrant
 
 ## Évaluation & Benchmarking
 
