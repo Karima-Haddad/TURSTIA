@@ -1,6 +1,14 @@
-# FastAPI (appel du pipeline)
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import pprint
+from fastapi import Body
+from fastapi import APIRouter
+from backend.agents.supervisor_agent import SupervisorAgent
+import traceback
+from backend.agents.document_agent import run_document_agent
+from backend.agents.document_agent import run_document_agent
+from backend.agents.profile_fusion_agent import build_final_profile
 
 from backend.agents.learning_loop_agent import LearningLoopAgent
 
@@ -9,9 +17,15 @@ from pathlib import Path
 from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi import Depends
+from backend.database.security import get_current_user
+from backend.database.auth import router as auth_router
 
 # Initialisation de l'app FastAPI
 app = FastAPI()
+
+# Inclusion des routes d'authentification
+app.include_router(auth_router, prefix="/auth")
 
 # Configuration du CORS pour autoriser les requêtes depuis le frontend Angular
 app.add_middleware(
@@ -50,7 +64,8 @@ def submit_outcome(request: OutcomeRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+        print(f"Error in submit_outcome: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 # Définition du fichier d’audit
@@ -58,7 +73,7 @@ AUDIT_LOG_FILE = Path("backend/logs/audit_log.jsonl")
 
 # Endpoint pour récupérer les logs d'audit
 @app.get("/audit")
-def get_audit_logs(case_id: str = Query(None)):
+def get_audit_logs(case_id: str = Query(None), user=Depends(get_current_user)):
     """
     Retourne les événements d'audit.
     Optionnellement filtrés par case_id.
@@ -80,3 +95,80 @@ def get_audit_logs(case_id: str = Query(None)):
                 events.append(event)
 
     return events
+
+
+
+
+@app.post("/api/document-agent/test")
+def test_document_agent(payload: dict = Body(...)):
+    try:
+        print("\n🔥 /api/document-agent/test CALLED 🔥\n")
+        pprint.pprint(payload)
+
+        case_id = payload.get("case_id")
+        documents = payload.get("documents", [])
+        applicant_form = payload.get("applicant_form", {})
+
+        result = run_document_agent(
+            case_id=case_id,
+            documents=documents
+        )
+
+        return {
+            "case_id": case_id,
+            "document_analysis": result
+        }
+
+    except Exception as e:
+        print("❌ DOCUMENT AGENT ERROR")
+        traceback.print_exc()
+
+        return {
+            "error": "DOCUMENT_AGENT_FAILED",
+            "message": str(e)
+        }
+
+@app.post("/api/complete-evaluation")
+def complete_evaluation(payload: dict = Body(...)):
+
+    case_id = payload.get("case_id")
+    applicant_form = payload.get("applicant_form", {})
+    loan_request = payload.get("loan_request", {})
+    documents = payload.get("documents", [])
+
+    # AGENT 1
+    doc_analysis = run_document_agent(
+        case_id=case_id,
+        documents=documents
+    )
+
+    # AGENT 2
+    fusion_result = build_final_profile(
+        case_id=case_id,
+        applicant_form=applicant_form,
+        loan_request=loan_request,
+        doc_signals=doc_analysis.doc_signals
+    )
+
+    return {
+        "case_id": case_id,
+        "document_analysis": doc_analysis,
+        "profile_fusion": fusion_result
+    }
+
+
+router = APIRouter()
+supervisoragent = SupervisorAgent()
+
+@router.post("/submit-application")
+def submit_application(payload: dict):
+    return supervisoragent.run(payload)
+
+
+
+@app.post("/api/submit-application")
+def submit_application(payload: dict):
+    supervisor = SupervisorAgent()
+    return supervisor.run(payload)
+
+

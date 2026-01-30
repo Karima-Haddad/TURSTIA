@@ -1,39 +1,7 @@
-/* .radar-svg {
-  border: 1px solid #eee;
-  background: #fafafa;
-}
-
-circle {
-  cursor: pointer;
-  transition: r 0.2s ease;
-}
-
-circle:hover {
-  r: 10;
-}
-
-
-.tooltip {
-  position: absolute;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 8px 10px;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-  z-index: 10;
-}
-
-.tooltip strong {
-  color: #333;
-}
- */
 
 
  /* ===============================================
    SIMILARITY RADAR — EXPLAINABLE AI DESIGN
-   Cohérent avec Audit & Outcome (Trustia Theme)
    =============================================== */
 
 /* Container global */

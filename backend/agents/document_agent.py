@@ -39,7 +39,7 @@ def extract_financials(pages: List[Dict]):
                         )
 
             if not expenses:
-                match = re.search(r"(expense|debit|dépense|depense|débit).*?([\d\s]+)", line.lower())
+                match = re.search(r"(expense|debit|d[eé]pense[s]?|d[eé]bit)\s*[:\-]?\s*([\d\s]+)", line.lower())
                 if match:
                     num_str = match.group(2).replace(" ", "").replace(",", "").replace(".", "")
                     if num_str.isdigit():
@@ -98,6 +98,72 @@ def extract_cin_from_lines(lines: list[str]):
             return match.group()
     return None
 
+def extract_employment_type(pages, evidence_map):
+    for page in pages:
+        for line in page["text"]:
+            l = line.lower()
+
+            if "cdi" in l or "permanent" in l:
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "Employee"
+
+            if "freelance" in l or "consultant" in l:
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "Freelance"
+
+            if "unemployed" in l or "sans emploi" in l:
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "Unemployed"
+
+    return None
+
+def extract_sector(pages, evidence_map):
+    tech = ["tech", "informatique", "software"]
+    finance = ["banque", "finance"]
+    health = ["clinique", "medical", "hôpital"]
+
+    for page in pages:
+        for line in page["text"]:
+            l = line.lower()
+
+            if any(word in l for word in tech):
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "tech"
+
+            if any(word in l for word in finance):
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "finance"
+
+            if any(word in l for word in health):
+                evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                return "health"
+
+    return None
+
+def extract_late_payments(pages, evidence_map):
+    count = 0
+    for page in pages:
+        for line in page["text"]:
+            l = line.lower()
+
+            if any(w in l for w in ["late", "retard", "penalty", "rejet"]):
+                count += 1
+                evidence_map.append(Evidence(doc_id="D1", page=page["page"], lines=[line]))
+
+    return count
+
+def extract_loan_amount(pages, evidence_map):
+    for page in pages:
+        for line in page["text"]:
+            match = re.search(r"montant\s*(de)?\s*([\d\s]+)\s*(tnd|eur|usd)?", line.lower())
+            if match:
+                num_str = match.group(2).replace(" ", "")
+                if num_str.isdigit():
+                    amount = int(num_str)
+                    evidence_map.append(Evidence(doc_id="D2", page=page["page"], lines=[line]))
+                    return amount
+    return None
+
 
 def run_document_agent(case_id, documents):
     print("📄 Documents reçus par l'agent :", documents)
@@ -107,13 +173,25 @@ def run_document_agent(case_id, documents):
     evidence_map = []
 
     for doc in documents:
-        if "content" not in doc:
-            print(f"⚠️ Document {doc.get('doc_id')} sans content")
+        # ===== SOURCE DU FICHIER =====
+        if "content" in doc:
+            # cas upload base64
+            filename = doc.get("filename", f"{uuid.uuid4()}")
+            file_path = TMP_DIR / filename
+            file_path.write_bytes(base64.b64decode(doc["content"]))
+
+        elif "uri" in doc:
+            # cas Swagger / fichier local
+            uri = doc["uri"].replace("file:///", "").replace("file://", "")
+            file_path = Path(uri)
+
+            if not file_path.exists():
+                print(f"❌ Fichier introuvable: {file_path}")
+                continue
+            filename = file_path.name
+        else:
+            print(f"⚠️ Document {doc.get('doc_id')} sans content ni uri")
             continue
-    
-        filename = doc.get("filename", f"{uuid.uuid4()}.pdf")
-        file_path = TMP_DIR / filename
-        file_path.write_bytes(base64.b64decode(doc["content"]))
 
         # Détection PDF vs image
         if filename.lower().endswith(".pdf"):
@@ -127,6 +205,15 @@ def run_document_agent(case_id, documents):
 
         if doc["type"] == "BANK_STATEMENT":
             income, expenses, evidences = extract_financials(pages)
+            emp_type = extract_employment_type(pages, evidence_map)
+            sector = extract_sector(pages, evidence_map)
+
+            if sector:
+                doc_signals["sector"] = sector
+            
+            if emp_type:
+                doc_signals["employment_type"] = emp_type
+
             if income is not None:
                 doc_signals["detected_income"] = income
 
@@ -143,6 +230,16 @@ def run_document_agent(case_id, documents):
             )
         if doc["type"] == "CONTRACT":
             duration = extract_contract_duration(pages,evidence_map)
+            loan_amount = extract_loan_amount(pages, evidence_map)
+            late = extract_late_payments(pages, evidence_map)
+
+            if late > 0:
+                doc_signals["late_payments"] = late
+            
+            if loan_amount:
+                doc_signals["detected_loan_amount"] = loan_amount
+
+
             if duration is not None:
                 doc_signals["contract_duration_months"] = duration
 

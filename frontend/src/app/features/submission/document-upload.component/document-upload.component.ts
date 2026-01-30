@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-document-upload',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './document-upload.component.html',
   styleUrls: ['./document-upload.component.css']
@@ -12,6 +13,8 @@ export class DocumentUploadComponent {
   @Output() documentsChange = new EventEmitter<any[]>();
 
   documents: any[] = [];
+  @Input() submitted = false;
+
 
   toBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -50,4 +53,10 @@ export class DocumentUploadComponent {
 
     reader.readAsDataURL(file);
   }
+
+  removeFile(index: number) {
+    this.documents = this.documents.filter((_, i) => i !== index);
+  }
+
+
 }

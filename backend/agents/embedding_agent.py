@@ -1,6 +1,5 @@
 # ===============================
-# Embedding Agent (FINAL VERSION)
-# OPTION 1: Texte uniquement pour la similarité
+# Embedding Agent 
 # ===============================
 
 from sentence_transformers import SentenceTransformer
@@ -13,6 +12,22 @@ from backend.utils.timers import measure_latency
 text_model = SentenceTransformer(TEXT_EMBEDDING_MODEL)
 
 
+
+def build_embedding_text(final_profile, loan_request):
+    dp = loan_request.get("default_probability", 0.25)
+    fraud_flag = loan_request.get("fraud_label", False)
+
+    return (
+        f"Applicant profile: {final_profile.get('employment_type')}, "
+        f"last employment sector {final_profile.get('sector')}. "
+        f"Loan request of {loan_request.get('loan_amount')} TND "
+        f"over {loan_request.get('term_months')} months. "
+        f"Estimated default probability {round(dp * 100, 1)} percent. "
+        f"Fraud detected: {'yes' if fraud_flag else 'no'}."
+    )
+
+
+
 # ===============================
 # Embedding TEXTE (SEUL vecteur Qdrant)
 # ===============================
@@ -20,8 +35,10 @@ text_model = SentenceTransformer(TEXT_EMBEDDING_MODEL)
 def embed_text(chunks):
 
     texts = [c["text"] for c in chunks if c.get("text")]
+
+    # Fallback si aucun document texte
     if not texts:
-        raise ValueError("No text chunks provided for embedding")
+        texts = ["Applicant profile without documents"]
 
     # Embedding par chunk puis moyenne
     embeddings = text_model.encode(texts)
@@ -37,7 +54,11 @@ class EmbeddingAgent:
     @measure_latency("Embedding Agent")
     def run(self, chunks, final_profile, loan_request, documents=None):
 
-        
+       if not chunks:
+        chunks = [{
+            "text": build_embedding_text(final_profile, loan_request)
+        }]
+
         text_vector = embed_text(chunks)
 
 

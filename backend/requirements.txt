@@ -5,5 +5,8 @@ fpdf
 python-multipart
 qdrant-client
 
-
-//pip install -r requirements.txt
+python-jose
+sentence_transformers
+passlib
+pymongo
+"pydantic[email]"

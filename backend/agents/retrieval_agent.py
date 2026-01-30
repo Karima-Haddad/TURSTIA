@@ -4,7 +4,8 @@
 
 from collections import defaultdict
 from typing import List, Dict
-
+from qdrant_client.models import PointStruct
+import uuid
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 from backend.qdrant.client import (
@@ -112,4 +113,19 @@ class QdrantRetrievalAgent:
             "similar_fraud_cases": similar_fraud_cases,
             "stats_by_decision": dict(stats_by_decision)
         }
- 
+    
+    def store_case(self, case_id: str, vector: list, payload: dict):
+        client = get_qdrant_client()
+
+        point = PointStruct(
+            id=str(uuid.uuid4()),
+            vector=vector,
+            payload=payload
+        )
+
+        client.upsert(
+            collection_name=QDRANT_COLLECTION,
+            points=[point]
+        )
+
+        

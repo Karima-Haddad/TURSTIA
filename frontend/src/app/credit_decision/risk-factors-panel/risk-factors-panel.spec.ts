@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Outcome } from './outcome';
+import { RiskFactorsPanel } from './risk-factors-panel';
 
-describe('Outcome', () => {
-  let component: Outcome;
-  let fixture: ComponentFixture<Outcome>;
+describe('RiskFactorsPanel', () => {
+  let component: RiskFactorsPanel;
+  let fixture: ComponentFixture<RiskFactorsPanel>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Outcome]
+      imports: [RiskFactorsPanel]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Outcome);
+    fixture = TestBed.createComponent(RiskFactorsPanel);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

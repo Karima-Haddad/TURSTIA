@@ -124,18 +124,49 @@ def main():
     # 3️⃣ Decision Agent latency
     # -------------------------------
 
-    decision_times = []
+      # -------------------------------
+        # Dummy upstream agent outputs
+        # -------------------------------
 
-    for _ in range(N_RUNS):
-        p = random.choice(test_points)
-        retrieval_result = retrieval_agent.run(
-            case_id=p.payload["case_id"],
-            case_vector=p.vector,
-            feature_payload={}
-        )
+        dummy_top_similarity = 0.82
 
-        _, dt = measure(lambda: decision_agent.run(retrieval_result))
-        decision_times.append(dt)
+        dummy_fraud_result = {
+            "fraud_score": 0.12,
+            "fraud_risk_level": "LOW",
+            "anomaly_score": 0.08,
+            "fraud_similarity": 0.2,
+            "fraud_flag": False
+        }
+
+        dummy_risk_result = {
+            "risk_score": 0.45,
+            "risk_level": "MEDIUM",
+            "debt_pressure": 0.5,
+            "instability_risk": 0.4,
+            "risk_flag": False,
+            "risk_level": "LOW",
+            "default_probability": 0.08
+        }
+
+        dummy_scenario_result = {
+            "best_scenario": "STANDARD_PLAN",
+            "best_scenario": "ACCEPT",
+            "recommended_installment": 320,
+            "scenario_score": 0.7,
+            "affordability_ratio": 0.35
+        }
+
+        decision_times = []
+
+        for _ in range(N_RUNS):
+            _, dt = measure(lambda: decision_agent.run(
+                dummy_top_similarity,
+                dummy_fraud_result,
+                dummy_scenario_result,
+                dummy_risk_result
+            ))
+            decision_times.append(dt)
+
 
     # -------------------------------
     # 4️⃣ Learning Loop Agent latency
